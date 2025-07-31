@@ -20,11 +20,16 @@ os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
 gnzip = os.path.join(tempfile.mkdtemp(), 'gn.zip')
 with open(gnzip, 'wb') as f:
   OS  = {'darwin': 'mac', 'linux': 'linux', 'linux2': 'linux', 'win32': 'windows'}[sys.platform]
-  cpu = {'aarch64': 'arm64', 'amd64': 'amd64', 'arm64': 'arm64', 'x86_64': 'amd64'}[platform.machine().lower()]
+  cpu = {'aarch64': 'arm64', 'amd64': 'amd64', 'arm64': 'arm64', 'x86_64': 'amd64', 'loongarch64': 'loongarch64'}[platform.machine().lower()]
 
   rev = 'b2afae122eeb6ce09c52d63f67dc53fc517dbdc8'
-  url = 'https://chrome-infra-packages.appspot.com/dl/gn/gn/{}-{}/+/git_revision:{}'.format(
-          OS,cpu,rev)
+  if cpu == 'loongarch64':
+    url = 'https://cloud.loongnix.cn/releases/loongarch64/timniederhausen/gn/{}/gn-{}-{}.zip'.format(
+            rev,OS,cpu)
+  else:
+    url = 'https://chrome-infra-packages.appspot.com/dl/gn/gn/{}-{}/+/git_revision:{}'.format(
+            OS,cpu,rev)
+
   f.write(urlopen(url).read())
 
 gn_filename = 'gn.exe' if 'win32' in sys.platform else 'gn'
